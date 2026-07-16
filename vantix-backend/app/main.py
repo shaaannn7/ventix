@@ -16,12 +16,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, Security
 
-# Configure explicit CORS origins to satisfy browser security specifications
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3002",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3002",
+    "https://ventix-mu.vercel.app",
 ]
 
 app = FastAPI(
