@@ -329,7 +329,7 @@ export const DemoSystem: React.FC = () => {
 
       {/* 4. One-Click Show Why Vantix Wins FAB overlay */}
       {!judgeModeActive && (
-        <div className="fixed bottom-2xl right-2xl z-[7000]">
+        <div className="fixed bottom-[32px] right-[80px] lg:right-[400px] z-[7000]">
           <button
             onClick={startJudgeMode}
             aria-label="Start interactive presentation showcase tour"

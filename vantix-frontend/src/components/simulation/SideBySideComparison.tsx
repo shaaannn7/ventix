@@ -14,7 +14,7 @@ interface CompareMetric {
 const COMPARE_METRICS: CompareMetric[] = [
   { label: 'Avg Ingress Wait', current: '12 mins', simulated: '28 mins', diff: '+16 mins', state: 'worse' },
   { label: 'Gate B4 Density', current: '1.4 p/m²', simulated: '3.6 p/m²', diff: '+2.2 p/m²', state: 'worse' },
-  { label: 'Staff Load Index', current: 'Nominal', simulated: 'STRETCHED', diff: '+12 volunteers req', state: 'worse' },
+  { label: 'Staff Load Index', current: 'Nominal', simulated: 'STRETCHED', diff: '+12 staff', state: 'worse' },
   { label: 'Metro Inflow Rate', current: '45 scans/min', simulated: '88 scans/min', diff: '+43 scans/min', state: 'neutral' },
 ];
 
@@ -48,7 +48,7 @@ export const SideBySideComparison: React.FC = () => {
               </div>
 
               {/* Current, Simulated, Difference values */}
-              <div className="flex items-center gap-xl font-mono text-right">
+              <div className="flex items-center gap-md font-mono text-right">
                 <div className="flex flex-col">
                   <span className="text-[9px] text-system-mutedText uppercase">Current</span>
                   <span className="text-white">{metric.current}</span>
@@ -59,7 +59,7 @@ export const SideBySideComparison: React.FC = () => {
                   <span className="text-system-purple font-semibold">{metric.simulated}</span>
                 </div>
 
-                <div className="flex flex-col min-w-[72px]">
+                <div className="flex flex-col min-w-[90px]">
                   <span className="text-[9px] text-system-mutedText uppercase">Variance</span>
                   <span className={diffColor}>{metric.diff}</span>
                 </div>

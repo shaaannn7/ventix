@@ -74,7 +74,7 @@ export const AuraFAB: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-xl right-xl z-50 flex flex-col items-end gap-sm select-none">
+    <div className="fixed bottom-[32px] right-xl lg:right-[340px] z-50 flex flex-col items-end gap-sm select-none">
       {/* Quick Action Expansion Menu */}
       {isOpen && (
         <div className="flex flex-col items-end gap-xs bg-obsidian-muted border border-system-border rounded-md shadow-high p-sm backdrop-blur-command transition-all">

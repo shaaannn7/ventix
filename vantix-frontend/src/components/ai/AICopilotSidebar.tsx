@@ -56,7 +56,7 @@ export const AICopilotSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-[320px] bg-obsidian-muted border-l border-system-border flex flex-col h-full select-none">
+    <aside className="hidden lg:flex w-[320px] bg-obsidian-muted border-l border-system-border flex-col h-full select-none shrink-0">
       {/* Sidebar Header */}
       <div className="h-[56px] border-b border-system-border flex items-center px-lg justify-between shrink-0">
         <div className="flex items-center gap-sm">

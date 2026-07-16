@@ -14,7 +14,7 @@ const DOUBLED = [...TICKERS, ...TICKERS];
 export const BottomTelemetryBar: React.FC = () => (
   <footer className="h-[26px] bg-obsidian-muted border-t border-system-border flex items-center overflow-hidden select-none font-mono text-[9px] shrink-0">
     {/* Static label */}
-    <div className="flex items-center gap-xs px-md border-r border-system-border h-full shrink-0">
+    <div className="flex items-center gap-xs px-md border-r border-system-border h-full shrink-0 bg-obsidian-muted z-10 relative">
       <span className="w-1.5 h-1.5 rounded-full bg-system-cyan animate-pulse" />
       <span className="text-system-mutedText uppercase tracking-widest">Live</span>
     </div>

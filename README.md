@@ -2,11 +2,11 @@
 
 ### AI-Native Stadium Intelligence Platform for FIFA World Cup 2026
 
-[![License](https://img.shields.io/github/license/shaaannn7/ventix?color=blue)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/shaaannn7/ventix?style=flat)](https://github.com/shaaannn7/ventix/stargazers)
-[![Issues](https://img.shields.io/github/issues/shaaannn7/ventix)](https://github.com/shaaannn7/ventix/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/shaaannn7/ventix)](https://github.com/shaaannn7/ventix/pulls)
-[![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20FastAPI%20%7C%20Three.js-cyan)](https://github.com/shaaannn7/ventix)
+[![License](https://img.shields.io/github/license/shaaannn7/vantix?color=blue)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/shaaannn7/vantix?style=flat)](https://github.com/shaaannn7/vantix/stargazers)
+[![Issues](https://img.shields.io/github/issues/shaaannn7/vantix)](https://github.com/shaaannn7/vantix/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/shaaannn7/vantix)](https://github.com/shaaannn7/vantix/pulls)
+[![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20FastAPI%20%7C%20Three.js-cyan)](https://github.com/shaaannn7/vantix)
 
 Vantix is an enterprise-grade, AI-native stadium operations platform combining a real-time 3D Digital Twin, autonomous agent coordination (LangGraph/Gemini), predictive crowd simulation, and operational decision support to improve safety, efficiency, accessibility, and venue management during major sporting events.
 
@@ -217,7 +217,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
 ## 13. Team & Contact
 
 * **Lead Maintainer**: Shan (`shaaannn7`)
-* **Project Link**: [https://github.com/shaaannn7/ventix](https://github.com/shaaannn7/ventix)
+* **Project Link**: [https://github.com/shaaannn7/vantix](https://github.com/shaaannn7/vantix)
 
 ---
 

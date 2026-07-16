@@ -90,7 +90,7 @@ const AICommandCenter: React.FC = () => {
             </div>
 
             {/* Tab viewports */}
-            <div className="flex-1 overflow-y-auto p-md space-y-md scrollbar-none">
+            <div className="flex-1 overflow-y-auto p-md pb-[100px] space-y-md scrollbar-none">
               {activeTab === 'orchestrator' && (
                 <>
                   <ConfidenceEngine />

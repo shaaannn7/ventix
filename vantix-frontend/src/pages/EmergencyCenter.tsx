@@ -432,7 +432,7 @@ export const EmergencyCenter: React.FC = () => {
           </div>
 
           {/* RIGHT PANEL: Live Timeline & Resource Logistics */}
-          <div className="w-1/3 flex flex-col gap-md overflow-y-auto pl-2xs scrollbar-none">
+          <div className="w-1/3 flex flex-col gap-md pb-[100px] overflow-y-auto pl-2xs scrollbar-none">
             
             {/* 1. Live Timeline log */}
             <div className="bg-obsidian-muted border border-system-border rounded-xs p-md flex flex-col gap-sm flex-1 max-h-[300px]">

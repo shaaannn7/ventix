@@ -38,7 +38,7 @@ const MissionControl: React.FC = () => {
             <AIMissionSummary />
             <LiveEventTimeline />
             <MissionStatusCard />
-            <div className="pb-xs">
+            <div className="pb-[100px]">
               <KPIGrid />
             </div>
           </div>
