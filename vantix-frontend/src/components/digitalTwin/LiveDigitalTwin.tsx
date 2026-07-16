@@ -15,7 +15,14 @@ import {
   Activity, 
   Flame, 
   HeartPulse, 
-  LogOut
+  LogOut,
+  Wifi,
+  Camera,
+  Zap,
+  Cpu,
+  Volume2,
+  Database,
+  Layers
 } from 'lucide-react';
 
 // --- Types ---
@@ -78,11 +85,33 @@ const CameraController: React.FC<{ cameraView: string }> = ({ cameraView }) => {
 export const LiveDigitalTwin: React.FC = () => {
   // Navigation & Layers States
   const [activeLayers, setActiveLayers] = useState({
-    heatmap: true,
+    density: true,
     crowd: true,
     volunteers: true,
     emergency: true,
     transport: false,
+    cameras: false,
+    wifi: false,
+    power: false,
+    sensors: false,
+    amenities: false,
+    noise: false,
+    network: false,
+  });
+
+  const [layerOpacities, setLayerOpacities] = useState({
+    density: 0.8,
+    crowd: 0.7,
+    volunteers: 0.9,
+    emergency: 0.9,
+    transport: 0.6,
+    cameras: 0.4,
+    wifi: 0.4,
+    power: 0.5,
+    sensors: 0.8,
+    amenities: 0.8,
+    noise: 0.5,
+    network: 0.7,
   });
 
   const [activeDeck, setActiveDeck] = useState('lower');
@@ -297,79 +326,380 @@ export const LiveDigitalTwin: React.FC = () => {
         </button>
       </div>
 
-      {/* 5. Right side Layer Selectors */}
-      <div className="absolute right-md top-[56px] z-10 flex flex-col gap-xs bg-obsidian-elevated/80 border border-system-border/60 p-sm rounded-xs backdrop-blur-command">
-        <span className="font-mono text-[8px] text-system-mutedText uppercase pb-2xs">Layers</span>
+      {/* 5. Right side Layer Selectors (Sleek scrollable spatial control dashboard) */}
+      <div className="absolute right-md top-[56px] z-10 w-[210px] max-h-[360px] bg-obsidian-elevated/85 border border-system-border/60 p-sm rounded-xs backdrop-blur-command flex flex-col gap-xs select-none">
         
-        <button 
-          onClick={() => toggleLayer('heatmap')}
-          aria-label="Toggle crowd density heatmap layer"
-          aria-pressed={activeLayers.heatmap}
-          className={`flex items-center gap-sm px-sm py-[5px] rounded-2xs text-[10px] font-mono border transition-colors ${
-            activeLayers.heatmap 
-              ? 'bg-system-purple/10 border-system-purple/20 text-system-purple' 
-              : 'bg-transparent border-transparent text-system-mutedText'
-          }`}
-        >
-          <Map className="w-3.5 h-3.5" />
-          <span>Density Map</span>
-        </button>
+        {/* Header Title with Legend Icon */}
+        <div className="flex items-center gap-xs border-b border-system-border/40 pb-2xs mb-2xs">
+          <Layers className="w-3.5 h-3.5 text-system-cyan" />
+          <span className="font-mono text-[9px] text-white uppercase tracking-wider font-semibold">Operational Layers</span>
+        </div>
 
-        <button 
-          onClick={() => toggleLayer('crowd')}
-          aria-label="Toggle active crowd flow lines"
-          aria-pressed={activeLayers.crowd}
-          className={`flex items-center gap-sm px-sm py-[5px] rounded-2xs text-[10px] font-mono border transition-colors ${
-            activeLayers.crowd 
-              ? 'bg-system-cyan/10 border-system-cyan/20 text-system-cyan' 
-              : 'bg-transparent border-transparent text-system-mutedText'
-          }`}
-        >
-          <Users className="w-3.5 h-3.5" />
-          <span>Crowd Flow</span>
-        </button>
+        {/* Scrollable grid area */}
+        <div className="flex-1 overflow-y-auto space-y-xs pr-2xs scrollbar-none">
+          
+          {/* CROWD DENSITY LAYER */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('density')}
+              aria-pressed={activeLayers.density}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.density 
+                  ? 'bg-system-purple/10 border-system-purple/20 text-system-purple' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Map className="w-3 h-3" />
+                <span>Density Heatmap</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-purple" />
+            </button>
+            {activeLayers.density && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.density} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, density: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-purple rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
 
-        <button 
-          onClick={() => toggleLayer('volunteers')}
-          aria-label="Toggle volunteer GPS locs"
-          aria-pressed={activeLayers.volunteers}
-          className={`flex items-center gap-sm px-sm py-[5px] rounded-2xs text-[10px] font-mono border transition-colors ${
-            activeLayers.volunteers 
-              ? 'bg-system-green/10 border-system-green/20 text-system-green' 
-              : 'bg-transparent border-transparent text-system-mutedText'
-          }`}
-        >
-          <UserCheck className="w-3.5 h-3.5" />
-          <span>Volunteer Locs</span>
-        </button>
+          {/* CROWD FLOW LINES */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('crowd')}
+              aria-pressed={activeLayers.crowd}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.crowd 
+                  ? 'bg-system-cyan/10 border-system-cyan/20 text-system-cyan' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Users className="w-3 h-3" />
+                <span>Crowd Vectors</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-cyan" />
+            </button>
+            {activeLayers.crowd && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.crowd} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, crowd: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-cyan rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
 
-        <button 
-          onClick={() => toggleLayer('emergency')}
-          aria-label="Toggle active warning beacons"
-          aria-pressed={activeLayers.emergency}
-          className={`flex items-center gap-sm px-sm py-[5px] rounded-2xs text-[10px] font-mono border transition-colors ${
-            activeLayers.emergency 
-              ? 'bg-system-crimson/10 border-system-crimson/20 text-system-crimson' 
-              : 'bg-transparent border-transparent text-system-mutedText'
-          }`}
-        >
-          <ShieldAlert className="w-3.5 h-3.5" />
-          <span>Alert Nodes</span>
-        </button>
+          {/* VOLUNTEER LOCS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('volunteers')}
+              aria-pressed={activeLayers.volunteers}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.volunteers 
+                  ? 'bg-system-green/10 border-system-green/20 text-system-green' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <UserCheck className="w-3 h-3" />
+                <span>Volunteer Staff</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-green" />
+            </button>
+            {activeLayers.volunteers && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.volunteers} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, volunteers: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-green rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
 
-        <button 
-          onClick={() => toggleLayer('transport')}
-          aria-label="Toggle transit arrival points"
-          aria-pressed={activeLayers.transport}
-          className={`flex items-center gap-sm px-sm py-[5px] rounded-2xs text-[10px] font-mono border transition-colors ${
-            activeLayers.transport 
-              ? 'bg-system-amber/10 border-system-amber/20 text-system-amber' 
-              : 'bg-transparent border-transparent text-system-mutedText'
-          }`}
-        >
-          <Train className="w-3.5 h-3.5" />
-          <span>Transit Hubs</span>
-        </button>
+          {/* EMERGENCY ALERTS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('emergency')}
+              aria-pressed={activeLayers.emergency}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.emergency 
+                  ? 'bg-system-crimson/10 border-system-crimson/20 text-system-crimson font-bold' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <ShieldAlert className="w-3 h-3" />
+                <span>Emergency Zones</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-crimson animate-ping" />
+            </button>
+            {activeLayers.emergency && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.emergency} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, emergency: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-crimson rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* TRANSIT HUBS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('transport')}
+              aria-pressed={activeLayers.transport}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.transport 
+                  ? 'bg-system-amber/10 border-system-amber/20 text-system-amber' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Train className="w-3 h-3" />
+                <span>Transit Nodes</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-amber" />
+            </button>
+            {activeLayers.transport && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.transport} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, transport: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-amber rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* CCTV CAMERA COVERAGE */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('cameras')}
+              aria-pressed={activeLayers.cameras}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.cameras 
+                  ? 'bg-system-cyan/10 border-system-cyan/20 text-system-cyan' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Camera className="w-3 h-3" />
+                <span>CCTV Coverage</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-cyan" />
+            </button>
+            {activeLayers.cameras && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.cameras} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, cameras: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-cyan rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* WIFI HOTSPOTS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('wifi')}
+              aria-pressed={activeLayers.wifi}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.wifi 
+                  ? 'bg-system-purple/10 border-system-purple/20 text-system-purple' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Wifi className="w-3 h-3" />
+                <span>WiFi Hotspots</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-purple" />
+            </button>
+            {activeLayers.wifi && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.wifi} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, wifi: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-purple rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* POWER DISTRIBUTION GRID */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('power')}
+              aria-pressed={activeLayers.power}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.power 
+                  ? 'bg-system-amber/10 border-system-amber/20 text-system-amber' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Zap className="w-3 h-3" />
+                <span>Power Grid</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-amber" />
+            </button>
+            {activeLayers.power && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.power} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, power: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-amber rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* IOT TELEMETRY SENSORS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('sensors')}
+              aria-pressed={activeLayers.sensors}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.sensors 
+                  ? 'bg-system-green/10 border-system-green/20 text-system-green' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Cpu className="w-3 h-3" />
+                <span>IoT Sensors</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-green" />
+            </button>
+            {activeLayers.sensors && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.sensors} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, sensors: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-green rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* AMENITIES MAP */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('amenities')}
+              aria-pressed={activeLayers.amenities}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.amenities 
+                  ? 'bg-system-cyan/10 border-system-cyan/20 text-system-cyan' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Map className="w-3 h-3" />
+                <span>Amenities Map</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-cyan" />
+            </button>
+            {activeLayers.amenities && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.amenities} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, amenities: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-cyan rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* NOISE LEVEL GRIDS */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('noise')}
+              aria-pressed={activeLayers.noise}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.noise 
+                  ? 'bg-system-crimson/10 border-system-crimson/20 text-system-crimson' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Volume2 className="w-3 h-3" />
+                <span>Noise Levels</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-crimson" />
+            </button>
+            {activeLayers.noise && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.noise} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, noise: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-crimson rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* NETWORK PACKET INTEGRITY */}
+          <div className="space-y-3xs">
+            <button 
+              onClick={() => toggleLayer('network')}
+              aria-pressed={activeLayers.network}
+              className={`w-full flex items-center justify-between px-xs py-[4px] rounded-2xs text-[9px] font-mono border transition-all ${
+                activeLayers.network 
+                  ? 'bg-system-purple/10 border-system-purple/20 text-system-purple' 
+                  : 'bg-transparent border-transparent text-system-mutedText hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-xs">
+                <Database className="w-3 h-3" />
+                <span>Network Health</span>
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-system-purple" />
+            </button>
+            {activeLayers.network && (
+              <div className="flex items-center gap-xs px-xs">
+                <span className="text-[7px] text-system-mutedText font-mono uppercase">Opacity:</span>
+                <input 
+                  type="range" min="0.1" max="1.0" step="0.05" 
+                  value={layerOpacities.network} 
+                  onChange={(e) => setLayerOpacities(prev => ({ ...prev, network: parseFloat(e.target.value) }))}
+                  className="flex-1 h-[2px] bg-obsidian accent-system-purple rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+        </div>
+
       </div>
 
       {/* 6. Main 3D Canvas viewport */}
@@ -382,14 +712,23 @@ export const LiveDigitalTwin: React.FC = () => {
           <hemisphereLight args={['#0ea5e9', '#1e293b', 0.4]} />
           
           {/* Main 3D Stadium mesh layout */}
-          <StadiumMesh activeDeck={activeDeck} emergencyMode={emergencyMode} roofOpen={roofOpen} />
+          <StadiumMesh 
+            activeDeck={activeDeck} 
+            emergencyMode={emergencyMode} 
+            roofOpen={roofOpen} 
+            emergencyType={emergencyType} 
+            predictionOffset={predictionOffset} 
+            activeLayers={activeLayers}
+            layerOpacities={layerOpacities}
+          />
 
           {/* Crowd Simulation particles layer */}
           {activeLayers.crowd && (
             <CrowdParticles 
               densityFactor={playbackActive ? (1 + predictionOffset * 0.05) : 0} 
-              heatmapActive={activeLayers.heatmap} 
+              heatmapActive={activeLayers.density} 
               emergencyMode={emergencyMode}
+              predictionOffset={predictionOffset}
             />
           )}
 

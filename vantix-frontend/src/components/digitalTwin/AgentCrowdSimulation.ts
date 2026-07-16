@@ -3,10 +3,12 @@ import * as THREE from 'three';
 export interface CrowdAgent {
   id: string;
   seatId: string;
+  startPos: THREE.Vector3;
+  targetPos: THREE.Vector3;
   position: THREE.Vector3;
-  target: THREE.Vector3;
   gateIndex: number;
   speed: number;
+  progress: number; // 0.0 (gate) to 1.0 (seat)
   state: 'WALKING' | 'SITTING' | 'CHEERING';
   cheerTimer: number;
 }
@@ -45,13 +47,24 @@ export class AgentCrowdSimulation {
         Math.sin(seatAngle) * seatRadius
       );
 
+      // Add a slight queue deviation to startPos so they don't spawn in a single point
+      const angleOffset = Math.random() * Math.PI * 2;
+      const queueRadius = 1.0 + Math.random() * 3.0;
+      startPos.add(new THREE.Vector3(
+        Math.cos(angleOffset) * queueRadius,
+        0,
+        Math.sin(angleOffset) * queueRadius
+      ));
+
       this.agents.push({
         id: `agent-${i}`,
         seatId: `seat-${i}`,
-        position: startPos,
-        target: targetPos,
+        startPos,
+        targetPos,
+        position: startPos.clone(),
         gateIndex,
-        speed: 0.08 + Math.random() * 0.06,
+        speed: 0.8 + Math.random() * 0.6,
+        progress: 0.05 + Math.random() * 0.1, // Start slightly walked in
         state: 'WALKING',
         cheerTimer: 0,
       });
@@ -59,75 +72,66 @@ export class AgentCrowdSimulation {
   }
 
   /**
-   * Updates all agents using a parallel flat-array vector update loop for maximum efficiency.
+   * Updates all agents based on prediction offset and active emergencies
    */
-  public update(deltaTime: number, emergencyMode: boolean) {
-    const tempDir = new THREE.Vector3();
-
+  public update(deltaTime: number, emergencyMode: boolean, predictionOffset: number) {
     for (let i = 0; i < this.agents.length; i++) {
       const agent = this.agents[i];
 
+      // Calculate target progress index based on parameters
+      let targetProgress = 1.0;
+      
       if (emergencyMode) {
-        // Reroute agents towards the nearest evacuation gate
-        const targetGate = this.gatePositions[agent.gateIndex];
-        tempDir.subVectors(targetGate, agent.position);
-        const dist = tempDir.length();
-
-        if (dist > 0.4) {
-          tempDir.normalize().multiplyScalar(agent.speed * 1.8 * deltaTime); // Running speed
-          agent.position.add(tempDir);
-          agent.state = 'WALKING';
+        targetProgress = 0.0; // Evacuate back to gates
+      } else {
+        // Map time prediction offset to target progress profiles
+        if (predictionOffset === 0) {
+          targetProgress = 0.15 + (i % 6) * 0.08; // Drizzle ingress flow
+        } else if (predictionOffset === 5) {
+          targetProgress = 0.45 + (i % 6) * 0.08; // In progress
+        } else if (predictionOffset === 15) {
+          targetProgress = 0.82 + (i % 6) * 0.03; // Most seated
         } else {
-          // Agent successfully evacuated the stadium footprint
-          agent.state = 'SITTING'; // Stop movement
+          targetProgress = 1.0; // Fully seated
         }
-        continue;
       }
 
-      // Normal Simulation flow states
-      switch (agent.state) {
-        case 'WALKING':
-          tempDir.subVectors(agent.target, agent.position);
-          const distanceToSeat = tempDir.length();
+      // Smooth progress interpolation
+      const diff = targetProgress - agent.progress;
+      agent.progress += diff * agent.speed * deltaTime * 0.4;
+      agent.progress = Math.max(0, Math.min(1, agent.progress));
 
-          if (distanceToSeat > 0.3) {
-            tempDir.normalize().multiplyScalar(agent.speed * deltaTime);
-            agent.position.add(tempDir);
-          } else {
-            agent.position.copy(agent.target);
-            agent.state = 'SITTING';
-          }
-          break;
+      // Calculate 3D position vector
+      agent.position.lerpVectors(agent.startPos, agent.targetPos, agent.progress);
 
-        case 'SITTING':
-          // Randomly trigger cheering standing transitions
-          if (Math.random() < 0.002) {
-            agent.state = 'CHEERING';
-            agent.cheerTimer = 2.0 + Math.random() * 3.0; // Cheer duration
-          }
-          break;
+      // Adjust state mapping
+      if (agent.progress > 0.96) {
+        if (agent.state === 'WALKING') {
+          agent.state = 'SITTING';
+        }
+        
+        // Randomly trigger cheering standing transitions for seated agents
+        if (agent.state === 'SITTING' && Math.random() < 0.001) {
+          agent.state = 'CHEERING';
+          agent.cheerTimer = 2.0 + Math.random() * 2.0;
+        }
 
-        case 'CHEERING':
+        if (agent.state === 'CHEERING') {
           agent.cheerTimer -= deltaTime;
+          // Animate small vertical cheer bounce
+          agent.position.y += Math.sin(stateTimeSecs() * 12.0) * 0.08;
           if (agent.cheerTimer <= 0) {
             agent.state = 'SITTING';
           }
-          break;
+        }
+      } else {
+        agent.state = 'WALKING';
       }
     }
   }
+}
 
-  /**
-   * Generates flat vertex buffers from current agent positions for instanced rendering or particle updates.
-   */
-  public getPositionsBuffer(): Float32Array {
-    const buffer = new Float32Array(this.agents.length * 3);
-    for (let i = 0; i < this.agents.length; i++) {
-      const pos = this.agents[i].position;
-      buffer[i * 3] = pos.x;
-      buffer[i * 3 + 1] = pos.y;
-      buffer[i * 3 + 2] = pos.z;
-    }
-    return buffer;
-  }
+// Helper to get time elapsed for cheer animation loops without full frame context
+function stateTimeSecs() {
+  return Date.now() / 1000;
 }

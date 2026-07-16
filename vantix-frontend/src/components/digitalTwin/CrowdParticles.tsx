@@ -7,12 +7,14 @@ interface CrowdParticlesProps {
   densityFactor: number;
   heatmapActive: boolean;
   emergencyMode: boolean;
+  predictionOffset: number;
 }
 
 export const CrowdParticles: React.FC<CrowdParticlesProps> = ({
   densityFactor,
   heatmapActive,
   emergencyMode,
+  predictionOffset,
 }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const count = 600;
@@ -32,7 +34,7 @@ export const CrowdParticles: React.FC<CrowdParticlesProps> = ({
     return arr;
   });
 
-  // Assign agent colors based on their state/path profiles
+  // Assign agent default colors based on their state/path profiles
   const [colors] = React.useState(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -51,26 +53,61 @@ export const CrowdParticles: React.FC<CrowdParticlesProps> = ({
     return arr;
   });
 
-  // Update dynamic agent coordinates in the ThreeJS render tick loop
+  // Update dynamic agent coordinates and colors in the render tick loop
   useFrame((state) => {
     if (!pointsRef.current) return;
-    const delta = Math.min(state.clock.getDelta(), 0.1); // Cap delta to prevent coordinate explosions
+    const delta = Math.min(state.clock.getDelta(), 0.1);
 
-    // Advance agent simulation (Walking -> Sitting -> Cheering)
-    simulation.update(delta * (densityFactor > 0 ? densityFactor : 0.2) * 8.0, emergencyMode);
+    // Update agent movement simulation parameters (deltaTime, emergencyMode, predictionOffset)
+    simulation.update(delta * (densityFactor > 0 ? densityFactor : 0.2) * 5.0, emergencyMode, predictionOffset);
 
     // Update point mesh position buffers
     const posAttribute = pointsRef.current.geometry.attributes.position;
     const posArray = posAttribute.array as Float32Array;
 
+    const colorAttribute = pointsRef.current.geometry.attributes.color;
+    const colorArray = colorAttribute.array as Float32Array;
+
     for (let i = 0; i < count; i++) {
-      const pos = simulation.agents[i].position;
+      const agent = simulation.agents[i];
+      const pos = agent.position;
       posArray[i * 3] = pos.x;
       posArray[i * 3 + 1] = pos.y;
       posArray[i * 3 + 2] = pos.z;
+
+      // Dynamically calculate colors if density heatmap mode is active
+      if (heatmapActive) {
+        if (agent.progress < 0.25) {
+          // Congested check-in queue zone (High density red)
+          colorArray[i * 3] = 0.94; // R
+          colorArray[i * 3 + 1] = 0.27; // G
+          colorArray[i * 3 + 2] = 0.27; // B
+        } else if (agent.progress < 0.65) {
+          // Corridor flow zone (Medium density yellow)
+          colorArray[i * 3] = 0.96; // R
+          colorArray[i * 3 + 1] = 0.8; // G
+          colorArray[i * 3 + 2] = 0.04; // B
+        } else {
+          // Seated area zone (Low density green/blue)
+          colorArray[i * 3] = 0.1; // R
+          colorArray[i * 3 + 1] = 0.73; // G
+          colorArray[i * 3 + 2] = 0.35; // B
+        }
+      } else {
+        // Reset to default static flow colors (original profile)
+        const rnd = (i % 10) / 10;
+        if (rnd > 0.88) {
+          colorArray[i * 3] = 0.94; colorArray[i * 3 + 1] = 0.27; colorArray[i * 3 + 2] = 0.27;
+        } else if (rnd > 0.78) {
+          colorArray[i * 3] = 0.96; colorArray[i * 3 + 1] = 0.62; colorArray[i * 3 + 2] = 0.04;
+        } else {
+          colorArray[i * 3] = 0.02; colorArray[i * 3 + 1] = 0.71; colorArray[i * 3 + 2] = 0.83;
+        }
+      }
     }
 
     posAttribute.needsUpdate = true;
+    colorAttribute.needsUpdate = true;
   });
 
   return (
@@ -80,10 +117,10 @@ export const CrowdParticles: React.FC<CrowdParticlesProps> = ({
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={heatmapActive ? 0.24 : 0.15}
+        size={heatmapActive ? 0.35 : 0.16}
         vertexColors
         transparent
-        opacity={heatmapActive ? 0.9 : 0.65}
+        opacity={heatmapActive ? 0.95 : 0.7}
         sizeAttenuation
       />
     </points>
