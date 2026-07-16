@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #050506;
+  --color-obsidian-muted: #09090b;
+  --color-obsidian-elevated: #121214;
+  --color-obsidian-sub: #1c1c1f;
+
+  --color-system-border: #1f1f23;
+  --color-system-cyan: #06b6d4;
+  --color-system-purple: #a855f7;
+  --color-system-green: #10b981;
+  --color-system-crimson: #ef4444;
+  --color-system-amber: #f59e0b;
+  --color-system-mutedText: #8b8b96;
+
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --spacing-2xs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 28px;
+
+  --radius-2xs: 2px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+
+  --shadow-base: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-high: 0 8px 16px -4px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-ai-glow: 0 0 8px 0 rgba(168, 85, 247, 0.1);
+  --shadow-alert-glow: 0 0 8px 0 rgba(239, 68, 68, 0.1);
+
+  --animate-strobe: strobe 800ms ease-in-out infinite;
+  --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes strobe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+body {
+  background-color: #050506;
+  color: #ffffff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body.has-judge-banner {
+  margin-top: 42px;
+  height: calc(100vh - 42px) !important;
+}
+
+/* Scrollbar styling for high-fidelity minimal dashboards */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c1c1f;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #27272a;
+}
+
+/* Custom styles for complete scrollbar hiding where necessary */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.glow-purple {
+  box-shadow: 0 0 8px 0 rgba(168, 85, 247, 0.12);
+}
+.glow-cyan {
+  box-shadow: 0 0 8px 0 rgba(6, 182, 212, 0.12);
+}
+.glassmorphic {
+  backdrop-filter: blur(16px);
+  background-color: rgba(9, 9, 11, 0.7);
+  border: 1px solid rgba(39, 39, 42, 0.35);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scanline {
+  0% { top: -2px; opacity: 0; }
+  5% { opacity: 0.06; }
+  95% { opacity: 0.06; }
+  100% { top: 100%; opacity: 0; }
+}
+@keyframes glowBreathe {
+  0%, 100% { opacity: 0.04; }
+  50% { opacity: 0.09; }
+}
+@keyframes countUp {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================================
+   ACCESSIBILITY — prefers-reduced-motion
+   All animations are disabled for users who have set this preference.
+   This satisfies WCAG 2.3.3 (Animation from Interactions).
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY — focus-visible ring
+   Provides visible keyboard focus indicator on all interactive elements.
+   WCAG 2.4.7 requires visible focus for keyboard navigation.
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Muted text contrast fix: #8b8b96 on #050506 = 5.1:1 contrast ratio (WCAG AA pass) */
+/* Apply --color-system-mutedText: #8b8b96; after verifying visual acceptance */
+
+/* Input height token correction: overrides spacing-sm (8px) height mapping to standard 32px height for all input/select fields */
+.h-sm {
+  height: 32px !important;
+}

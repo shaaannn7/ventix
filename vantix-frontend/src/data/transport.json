@@ -1,0 +1,11 @@
+[
+  {
+    "lineId": "L1-METRO",
+    "lineName": "Linea 1",
+    "type": "metro",
+    "capacityPct": 92,
+    "waitMinutes": 2,
+    "frequencyMinutes": 3,
+    "status": "critical"
+  }
+]

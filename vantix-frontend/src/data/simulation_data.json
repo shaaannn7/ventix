@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-07-16T09:30:00Z",
+  "matchId": "mex-bra-2026",
+  "stadium": "AT&T Stadium (Arlington, Texas)",
+  "gameClock": "74:12",
+  "crowdOverallDensityPct": 83.4,
+  "crowdSections": [
+    { "sectionId": "SEC-101", "densityPct": 88.2, "state": "CHEERING" },
+    { "sectionId": "SEC-102", "densityPct": 92.5, "state": "SITTING" },
+    { "sectionId": "SEC-103", "densityPct": 78.1, "state": "WALKING" },
+    { "sectionId": "SEC-104", "densityPct": 84.6, "state": "SITTING" }
+  ],
+  "players": [
+    {
+      "playerId": "p-mex-10",
+      "team": "MEX",
+      "number": 10,
+      "name": "G. Dos Santos",
+      "positionField2D": { "x": 12.4, "z": -4.8 },
+      "velocityMs": 6.8,
+      "heartRateBpm": 164
+    },
+    {
+      "playerId": "p-bra-09",
+      "team": "BRA",
+      "number": 9,
+      "name": "Neymar Jr",
+      "positionField2D": { "x": 14.8, "z": -2.2 },
+      "velocityMs": 8.4,
+      "heartRateBpm": 172
+    },
+    {
+      "playerId": "p-mex-04",
+      "team": "MEX",
+      "number": 4,
+      "name": "R. Marquez",
+      "positionField2D": { "x": 8.1, "z": -8.5 },
+      "velocityMs": 4.2,
+      "heartRateBpm": 158
+    }
+  ]
+}

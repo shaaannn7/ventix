@@ -1,0 +1,18 @@
+[
+  {
+    "sectorId": "SEC-A1",
+    "density": 1.2,
+    "flowRate": 45,
+    "gateStatus": "OPEN",
+    "optimalRate": 60,
+    "timestamp": 1783964349
+  },
+  {
+    "sectorId": "SEC-B4",
+    "density": 3.6,
+    "flowRate": 88,
+    "gateStatus": "RESTRICTED",
+    "optimalRate": 70,
+    "timestamp": 1783964349
+  }
+]

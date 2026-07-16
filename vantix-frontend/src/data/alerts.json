@@ -1,0 +1,12 @@
+[
+  {
+    "id": "ALT-102",
+    "title": "Gate 4B Crowding Surge",
+    "location": "Sector B4 Ingress",
+    "severity": "high",
+    "status": "dispatching",
+    "reporter": "CCTV-Sensor-4",
+    "timestamp": 1783964300,
+    "coordinates": [19.3029, -99.1505]
+  }
+]

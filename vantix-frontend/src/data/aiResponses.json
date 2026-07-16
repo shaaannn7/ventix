@@ -1,0 +1,7 @@
+[
+  {
+    "scenarioId": "surge-concourse-b",
+    "recommendation": "Redistribute 15 volunteers from Gate C to Gate E to balance ingress wait times.",
+    "expectedFlowReductionPct": 25
+  }
+]

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Vantix — GenAI Stadium Intelligence Platform
+# This is an operational command center. Production deployments are access-controlled.
+
+Sitemap: /sitemap.xml

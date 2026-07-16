@@ -1,0 +1,9 @@
+{
+  "stadiumName": "Estadio Azteca",
+  "totalCapacity": 87523,
+  "decks": [
+    { "id": "lower", "name": "Lower Concourse", "level": 1 },
+    { "id": "mid", "name": "Executive Suites", "level": 2 },
+    { "id": "upper", "name": "Upper Concourse", "level": 3 }
+  ]
+}
